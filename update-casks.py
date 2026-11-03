@@ -25,18 +25,21 @@ TEMPLATE = '''cask "{cask}" do
 
   # L'app se met à jour elle-même (images disque signées Ed25519).
   auto_updates true
-  depends_on macos: ">= :sequoia"
+  depends_on macos: :sequoia
 
   app "{app}.app"
 
   # App non notarisée : sans cela, Gatekeeper refuserait de l'ouvrir.
-  postflight do
-    system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{{appdir}}/{app}.app"]
+  postflight_steps do
+    run "/usr/bin/xattr",
+        args:           ["-dr", "com.apple.quarantine", "{{{{appdir}}}}/{app}.app"],
+        writable_paths: ["{app}.app"],
+        writable_base:  :appdir
   end
 
   zap trash: [
-    "~/Library/Preferences/{bundle}.plist",
     "~/Library/Application Support/{app}",
+    "~/Library/Preferences/{bundle}.plist",
   ]
 end
 '''
@@ -62,7 +65,7 @@ for cask, repo, app, bundle, desc in APPS:
     if not any(a["name"] == asset for a in release["assets"]):
         print(f"{cask} : {asset} absent de la release")
         continue
-    if path.exists() and f'version "{version}"' in path.read_text():
+    if path.exists() and f'version "{version}"' in path.read_text() and "postflight_steps" in path.read_text():
         print(f"{cask} {version} : à jour")
         continue
     data = get(f"https://github.com/{repo}/releases/download/v{version}/{asset}")

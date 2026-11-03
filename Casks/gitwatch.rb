@@ -9,17 +9,20 @@ cask "gitwatch" do
 
   # L'app se met à jour elle-même (images disque signées Ed25519).
   auto_updates true
-  depends_on macos: ">= :sequoia"
+  depends_on macos: :sequoia
 
   app "GitWatch.app"
 
   # App non notarisée : sans cela, Gatekeeper refuserait de l'ouvrir.
-  postflight do
-    system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{appdir}/GitWatch.app"]
+  postflight_steps do
+    run "/usr/bin/xattr",
+        args:           ["-dr", "com.apple.quarantine", "{{appdir}}/GitWatch.app"],
+        writable_paths: ["GitWatch.app"],
+        writable_base:  :appdir
   end
 
   zap trash: [
-    "~/Library/Preferences/local.GitWatch.plist",
     "~/Library/Application Support/GitWatch",
+    "~/Library/Preferences/local.GitWatch.plist",
   ]
 end
