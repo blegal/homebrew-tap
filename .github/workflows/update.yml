@@ -1,0 +1,27 @@
+# Met à jour les casks à chaque nouvelle release des apps (vérification toutes les heures).
+name: Mise à jour des casks
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Casks
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 update-casks.py
+      - name: Commit
+        run: |
+          git add Casks
+          git diff --cached --quiet && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Casks : $(git diff --cached --name-only | xargs -n1 basename | sed 's/\.rb$//' | paste -sd ' ' -)"
+          git push
