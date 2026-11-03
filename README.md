@@ -9,7 +9,8 @@ brew install --cask blegal/tap/gitwatch      # Git repositories monitor
 brew install --cask blegal/tap/iressources   # system resources monitor
 ```
 
-The apps update themselves; `brew upgrade` leaves them alone (`auto_updates`). They are not notarized by
+iExplorer, iBaobab and GitWatch update themselves (`brew upgrade` leaves them alone); iRessources is updated by
+`brew upgrade`. They are not notarized by
 Apple: the cask removes the quarantine attribute after installation so Gatekeeper lets them open.
 
 Casks are regenerated every hour from each app's latest GitHub release by
@@ -17,5 +18,5 @@ Casks are regenerated every hour from each app's latest GitHub release by
 
 ---
 
-**Français** — `brew install --cask blegal/tap/<app>` installe l'app ; ses mises à jour restent automatiques. Les casks
+**Français** — `brew install --cask blegal/tap/<app>` installe l'app ; iExplorer, iBaobab et GitWatch se mettent ensuite à jour seules, iRessources par `brew upgrade`. Les casks
 suivent seuls la dernière release de chaque app.

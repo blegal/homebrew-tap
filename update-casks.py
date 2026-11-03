@@ -7,11 +7,12 @@ contenant <App>-<version>.dmg est ignorée : son cask apparaîtra à sa premièr
 import hashlib, json, os, pathlib, urllib.request
 
 APPS = [
-    # (cask, dépôt, nom de l'app, identifiant du bundle, description)
-    ("iexplorer", "blegal/iExplorer", "iExplorer", "local.iExplorer", "Native multi-panel file manager"),
-    ("ibaobab", "blegal/iBaobab", "iBaobab", "local.iBaobab", "Disk usage analyser"),
-    ("gitwatch", "blegal/GitWatch", "GitWatch", "local.GitWatch", "Monitor for local Git repositories"),
-    ("iressources", "blegal/iRessources", "iRessources", "fr.inria.iRessources", "System resources monitor"),
+    # (cask, dépôt, nom de l'app, identifiant du bundle, description, mise à jour intégrée)
+    # Sans mise à jour intégrée, pas d'`auto_updates` : c'est `brew upgrade` qui met l'app à jour.
+    ("iexplorer", "blegal/iExplorer", "iExplorer", "local.iExplorer", "Native multi-panel file manager", True),
+    ("ibaobab", "blegal/iBaobab", "iBaobab", "local.iBaobab", "Disk usage analyser", True),
+    ("gitwatch", "blegal/GitWatch", "GitWatch", "local.GitWatch", "Monitor for local Git repositories", True),
+    ("iressources", "blegal/iRessources", "iRessources", "fr.inria.iRessources", "System resources monitor", False),
 ]
 
 TEMPLATE = '''cask "{cask}" do
@@ -23,9 +24,7 @@ TEMPLATE = '''cask "{cask}" do
   desc "{desc}"
   homepage "https://github.com/{repo}"
 
-  # L'app se met à jour elle-même (images disque signées Ed25519).
-  auto_updates true
-  depends_on macos: :sequoia
+{auto_updates}  depends_on macos: :sequoia
 
   app "{app}.app"
 
@@ -53,7 +52,7 @@ def get(url):
         return response.read()
 
 
-for cask, repo, app, bundle, desc in APPS:
+for cask, repo, app, bundle, desc, updates in APPS:
     path = pathlib.Path("Casks") / f"{cask}.rb"
     try:
         release = json.loads(get(f"https://api.github.com/repos/{repo}/releases/latest"))
@@ -65,10 +64,11 @@ for cask, repo, app, bundle, desc in APPS:
     if not any(a["name"] == asset for a in release["assets"]):
         print(f"{cask} : {asset} absent de la release")
         continue
-    if path.exists() and f'version "{version}"' in path.read_text() and "postflight_steps" in path.read_text():
+    auto_updates = "  # L'app se met à jour elle-même (images disque signées Ed25519).\n  auto_updates true\n" if updates else ""
+    if path.exists() and f'version "{version}"' in path.read_text() and ("auto_updates" in path.read_text()) == updates:
         print(f"{cask} {version} : à jour")
         continue
     data = get(f"https://github.com/{repo}/releases/download/v{version}/{asset}")
     sha256 = hashlib.sha256(data).hexdigest()
-    path.write_text(TEMPLATE.format(cask=cask, repo=repo, app=app, bundle=bundle, desc=desc, version=version, sha256=sha256))
+    path.write_text(TEMPLATE.format(cask=cask, repo=repo, app=app, bundle=bundle, desc=desc, auto_updates=auto_updates, version=version, sha256=sha256))
     print(f"{cask} {version} : mis à jour")

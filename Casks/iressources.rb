@@ -7,8 +7,6 @@ cask "iressources" do
   desc "System resources monitor"
   homepage "https://github.com/blegal/iRessources"
 
-  # L'app se met à jour elle-même (images disque signées Ed25519).
-  auto_updates true
   depends_on macos: :sequoia
 
   app "iRessources.app"
