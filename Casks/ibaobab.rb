@@ -1,6 +1,6 @@
 cask "ibaobab" do
-  version "1.0.6"
-  sha256 "0b2a685c4a6d49dcbbabcc2c15c9a0b894b77ccbee13348a96fd4774acc58eda"
+  version "1.0.9"
+  sha256 "d077d45c1c67d8da4adddb9830fd51ce2ca554de239e5af2026f794a114eb730"
 
   url "https://github.com/blegal/iBaobab/releases/download/v#{version}/iBaobab-#{version}.dmg"
   name "iBaobab"
