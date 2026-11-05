@@ -1,6 +1,6 @@
 cask "iressources" do
-  version "1.0.0"
-  sha256 "2909c0c401f1a2d165c06f79dc45c2ef50bf1a33100908f778180dfd515a931a"
+  version "1.0.1"
+  sha256 "d53ea7a9971a67ee5c01f01b0caf36232f556d26771bf7e30155753db97e9eae"
 
   url "https://github.com/blegal/iRessources/releases/download/v#{version}/iRessources-#{version}.dmg"
   name "iRessources"
