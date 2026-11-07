@@ -1,6 +1,6 @@
 cask "iexplorer" do
-  version "4.0.8"
-  sha256 "1ac39ff56bda8bbb01505ab61ec9fd70f14fe05bea7b713f859c41fa33606322"
+  version "4.0.11"
+  sha256 "11fb3d1dd3d36d9f2f835bc2a8e0007149586965299a6e81f89d22ef24d47c34"
 
   url "https://github.com/blegal/iExplorer/releases/download/v#{version}/iExplorer-#{version}.dmg"
   name "iExplorer"
