@@ -1,6 +1,6 @@
 cask "gitwatch" do
-  version "2.0.0"
-  sha256 "f7c48aa038f92685aaab71eddebbdf01062ed942da47ef778a91c8de02b694f0"
+  version "2.0.2"
+  sha256 "020cfc8324736e6cbb7d75c14ecd3026b153052da449da2db17943a0f4e4114c"
 
   url "https://github.com/blegal/GitWatch/releases/download/v#{version}/GitWatch-#{version}.dmg"
   name "GitWatch"
